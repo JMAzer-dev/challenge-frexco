@@ -1,5 +1,5 @@
 // React
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 // Icons
 import * as Md from 'react-icons/md';
@@ -13,18 +13,35 @@ const Navbar = ({
   price,
 }) => {
   const [cartOpen, setCartOpen] = useState(false);
+  const [shadow, setShadow] = useState(false);
   const navigate = useNavigate();
   const handleCart = () => {
     setCartOpen(!cartOpen);
   };
+  useEffect(() => {
+    const handleShaddow = () => {
+      if (window.scrollY >= 1) {
+        setShadow(true);
+      } else {
+        setShadow(false);
+      }
+    };
+    window.addEventListener('scroll', handleShaddow);
+  }, []);
 
   const getTotalItems = (items) =>
     items.reduce((a, item) => a + item.amount, 0);
 
   return (
     // navbar
-    <header className="fixed w-full z-10 bg-white/90 shadow-md">
-      <nav className="flex flex-row justify-between items-center mx-8 my-5  ">
+    <header
+      className={
+        shadow
+          ? 'fixed w-full z-10 bg-white/90 shadow-lg duration-300 transition ease-in'
+          : 'fixed w-full z-10 bg-white'
+      }
+    >
+      <nav className="flex flex-row justify-between items-center mx-8 my-5">
         <div>
           <Link
             to="/"
@@ -130,12 +147,15 @@ const Navbar = ({
                   </p>
                   <div>
                     <div
-                      onClick={() => navigate('/cart')}
+                      onClick={handleCart}
                       className="cursor-pointer px-4 py-2 rounded-xl bg-green-300 hover:bg-green-400 active:bg-green-500"
                     >
-                      <p onClick={handleCart} className="cursor-pointer">
+                      <button
+                        onClick={() => navigate('/cart')}
+                        className="cursor-pointer"
+                      >
                         Checkout
-                      </p>
+                      </button>
                     </div>
                   </div>
                 </div>
